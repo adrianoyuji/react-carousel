@@ -26,7 +26,6 @@ const Carousel = ({
   styles,
   infinite = false,
   displayQuantity = 1,
-  autoScrolling = false,
   currentPosition = 0,
   disableControls = false,
 }) => {

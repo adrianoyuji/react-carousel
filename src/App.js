@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { createUseStyles } from "react-jss";
 import Carousel from "./components/Carousel";
 import Header from "./components/Header";
+import FooterActions from "./components/FooterActions";
 
 const useStyles = createUseStyles({
   layout: {
@@ -26,12 +27,33 @@ const useStyles = createUseStyles({
 const App = () => {
   const classes = useStyles();
 
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [displayQuantity, setDisplayQuantity] = useState(1);
+  const [infinite, setInfinite] = useState(false);
+  const [disableControls, setDisableControl] = useState(false);
+
+  const handleChangeSlide = (event) => {
+    setCurrentSlide(event.target.value);
+  };
+  const handleChangeDisplayQuantity = (event) => {
+    setDisplayQuantity(event.target.value);
+  };
+  const handleChangeInfinite = (event) => {
+    setInfinite(event.target.checked);
+  };
+  const handleChangeDisableControls = (event) => {
+    setDisableControl(event.target.checked);
+  };
+
   return (
     <main className={classes.layout}>
       <Header />
       <div className={classes.appContainer}>
         <Carousel
-          displayQuantity={1}
+          displayQuantity={displayQuantity}
+          currentPosition={currentSlide}
+          disableControls={disableControls}
+          infinite={infinite}
           styles={{ height: "60vh", width: "100vw" }}
         >
           <img src="https://i.pinimg.com/originals/20/c4/ed/20c4ed904c96d955c7baed21e22d47e0.jpg" />
@@ -42,6 +64,15 @@ const App = () => {
           <img src="https://i.pinimg.com/originals/54/de/30/54de300e7be008b6a744ef623f64e454.jpg" />
         </Carousel>
       </div>
+      <FooterActions
+        changeSlide={handleChangeSlide}
+        changeDisplayQuantity={handleChangeDisplayQuantity}
+        changeInfinite={handleChangeInfinite}
+        changeDisableControls={handleChangeDisableControls}
+        displayQuantity={displayQuantity}
+        disableControls={disableControls}
+        infinite={infinite}
+      />
     </main>
   );
 };
