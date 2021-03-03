@@ -37,6 +37,10 @@ const Carousel = ({
   const carouselRef = useRef(null);
 
   useEffect(() => {
+    setCurrentIndex(currentPosition);
+  }, [currentPosition]);
+
+  useEffect(() => {
     carouselRef.current.scroll({
       left: (currentIndex * carouselRef.current.offsetWidth) / displayQuantity,
       behavior: "smooth",
@@ -59,7 +63,7 @@ const Carousel = ({
       //tracks the user finger on scroll
       carouselRef.current.scroll(
         (event.touches[0].pageX - initialPosition) * -1 +
-          currentIndex * carouselRef.current.offsetWidth,
+          (currentIndex * carouselRef.current.offsetWidth) / displayQuantity,
         0
       );
     },
@@ -135,7 +139,7 @@ const Carousel = ({
           onTouchEnd={handleScreenRelease}
         />
       ))}
-      {window.innerWidth > 768 && !disableControls && (
+      {window.innerWidth > 800 && !disableControls && (
         <Controls
           onNext={nextSlide}
           onPrevious={previousSlide}
