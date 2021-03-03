@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { createUseStyles } from "react-jss";
 
 const useStyles = createUseStyles({
@@ -30,52 +30,88 @@ const Carousel = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [onTouchTimer, setOnTouchtimer] = useState(0);
   const [initialPosition, setInitialPosition] = useState(0);
+  const carouselRef = useRef(null);
 
-  const handleScreenTouch = (event) => {
-    //saves the initial time on screen touch
-    setOnTouchtimer(performance.now());
-    //gets page X value on screen touch
-    setInitialPosition(event.changedTouches.item(0).pageX);
-  };
+  useEffect(() => {
+    carouselRef.current.scroll({
+      left: currentIndex * carouselRef.current.offsetWidth,
+      behavior: "smooth",
+    });
+  }, [currentIndex]);
 
-  const handleScreenRelease = (event) => {
-    //gets page X value on screen release
-    const currentPosition = event.changedTouches.item(0).pageX;
+  const handleScreenTouch = useCallback(
+    (event) => {
+      //saves the initial time on screen touch
+      setOnTouchtimer(performance.now());
+      //gets page X value on screen touch
+      setInitialPosition(event.changedTouches.item(0).pageX);
+    },
+    [onTouchTimer, initialPosition]
+  );
 
-    //this condition handles swiping to left or right
-    if (performance.now() - onTouchTimer <= 150) {
-      if (initialPosition <= currentPosition) {
-        console.log("prev");
+  const handleScreenRelease = useCallback(
+    (event) => {
+      //gets page X value on screen release
+      const currentPosition = event.changedTouches.item(0).pageX;
+
+      //this condition handles swiping to left or right
+      //if the user swipes fast it will activate a quick swipe
+      if (performance.now() - onTouchTimer <= 150) {
+        if (initialPosition <= currentPosition) {
+          previousSlide();
+        } else {
+          nextSlide();
+        }
       } else {
-        console.log("next");
+        //handles next or prev swiping if the scrolling goes
+        //through at least 50% of the next/prev slide
+        const carouselWidth = carouselRef.current.offsetWidth / screenSlides;
+        const swipeLenght = currentPosition - initialPosition;
+        if (swipeLenght > 0 && swipeLenght >= carouselWidth * 0.5) {
+          previousSlide();
+        } else if (swipeLenght < 0 && swipeLenght * -1 >= carouselWidth * 0.5) {
+          nextSlide();
+        } else {
+          keepSlide();
+        }
       }
-    } else {
-      //handles next or prev swiping if the scrolling goes
-      //through at least 50% of the next/prev slide
-      const carouselWidth = document.getElementById("carousel").offsetWidth;
-      const swipeLenght = currentPosition - initialPosition;
-      console.log(swipeLenght);
-      if (swipeLenght > 0 && swipeLenght >= carouselWidth * 0.5) {
-        console.log("prev");
-      } else if (swipeLenght < 0 && swipeLenght * -1 >= carouselWidth * 0.5) {
-        console.log("next");
-      } else {
-        console.log("returns to center");
-      }
+    },
+    [onTouchTimer, initialPosition]
+  );
+
+  const nextSlide = () => {
+    if (currentIndex < children.length - 1) {
+      setCurrentIndex(currentIndex + 1);
     }
   };
+  const previousSlide = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+  const keepSlide = () => {
+    carouselRef.current.scroll({
+      left: currentIndex * carouselRef.current.offsetWidth,
+      behavior: "smooth",
+    });
+  };
+  const slideTo = () => {};
+
   return (
-    <div className={classes.container} id="carousel">
-      {children.map((child, index) => (
-        <child.type
-          {...child.props}
-          key={index}
-          className={`${classes.carouselItem} ${child.props.className}`}
-          onTouchStart={handleScreenTouch}
-          onTouchEnd={handleScreenRelease}
-        />
-      ))}
-    </div>
+    <>
+      <div className={classes.container} ref={carouselRef}>
+        {children.map((child, index) => (
+          <child.type
+            {...child.props}
+            key={index}
+            className={`${classes.carouselItem} ${child.props.className}`}
+            onTouchStart={handleScreenTouch}
+            onTouchEnd={handleScreenRelease}
+          />
+        ))}
+      </div>
+      {currentIndex}
+    </>
   );
 };
 

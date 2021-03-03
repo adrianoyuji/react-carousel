@@ -30,7 +30,7 @@ const App = () => {
   return (
     <div className={classes.appContainer}>
       <Header />
-      <Carousel styles={{ height: "90vh", width: "100vw" }}>
+      <Carousel screenSlides={1} styles={{ height: "90vh", width: "100vw" }}>
         <img src="https://i.pinimg.com/originals/20/c4/ed/20c4ed904c96d955c7baed21e22d47e0.jpg" />
         <img src="https://webneel.com/wallpaper/sites/default/files/images/08-2018/3-nature-wallpaper-mountain.jpg" />
         <div className={classes.teste}>
