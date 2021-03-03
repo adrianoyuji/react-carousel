@@ -41,7 +41,13 @@ const useStyles = createUseStyles({
   },
 });
 
-const Controls = ({ onNext, onPrevious, currentIndex, displayQuantity }) => {
+const Controls = ({
+  onNext,
+  onPrevious,
+  currentIndex,
+  displayQuantity,
+  lastIndex,
+}) => {
   const classes = useStyles();
   const rightChevron = ">";
   const leftChevron = "<";
@@ -55,13 +61,17 @@ const Controls = ({ onNext, onPrevious, currentIndex, displayQuantity }) => {
         transitionTimingFunction: "cubic-bezier(0.455, 0.03, 0.515, 0.955)",
       }}
     >
-      <div onClick={onPrevious} className={classes.leftButton}>
-        {leftChevron}
-      </div>
+      {currentIndex !== 0 && (
+        <div onClick={onPrevious} className={classes.leftButton}>
+          {leftChevron}
+        </div>
+      )}
 
-      <div onClick={onNext} className={classes.rightButton}>
-        {rightChevron}
-      </div>
+      {currentIndex < lastIndex - 1 && (
+        <div onClick={onNext} className={classes.rightButton}>
+          {rightChevron}
+        </div>
+      )}
     </div>
   );
 };

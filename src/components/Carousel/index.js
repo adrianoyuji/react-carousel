@@ -10,7 +10,7 @@ const useStyles = createUseStyles({
     maxHeight: styles.maxHeight || "none",
     width: styles.width || "100vw",
     maxWidth: styles.maxWidth || "none",
-    overflowX: "scroll",
+    overflowX: "hidden",
     overflowY: "hidden",
     position: "relative",
   }),
@@ -27,10 +27,11 @@ const Carousel = ({
   infinite = false,
   displayQuantity = 1,
   autoScrolling = false,
+  currentPosition = 0,
   disableControls = false,
 }) => {
   const classes = useStyles({ styles, displayQuantity });
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(currentPosition);
   const [onTouchTimer, setOnTouchtimer] = useState(0);
   const [initialPosition, setInitialPosition] = useState(0);
   const carouselRef = useRef(null);
@@ -52,6 +53,19 @@ const Carousel = ({
     [onTouchTimer, initialPosition]
   );
 
+  const handleScreenScroll = useCallback(
+    (event) => {
+      //this scrolls the slides, preventing inertial scrolling
+      //tracks the user finger on scroll
+      carouselRef.current.scroll(
+        (event.touches[0].pageX - initialPosition) * -1 +
+          currentIndex * carouselRef.current.offsetWidth,
+        0
+      );
+    },
+    [initialPosition, carouselRef]
+  );
+
   const handleScreenRelease = useCallback(
     (event) => {
       //gets page X value on screen release
@@ -59,7 +73,7 @@ const Carousel = ({
 
       //this condition handles swiping to left or right
       //if the user swipes fast it will activate the sliding
-      if (performance.now() - onTouchTimer <= 150) {
+      if (performance.now() - onTouchTimer <= 300) {
         if (initialPosition <= currentPosition) {
           previousSlide();
         } else {
@@ -76,7 +90,7 @@ const Carousel = ({
         } else if (swipeLenght < 0 && swipeLenght * -1 >= carouselWidth * 0.5) {
           nextSlide();
         } else {
-          keepSlide();
+          reCenterSlide();
         }
       }
     },
@@ -97,23 +111,27 @@ const Carousel = ({
     }
   };
 
-  const keepSlide = () => {
+  const reCenterSlide = () => {
+    //re centers the slide if the user does not
+    //scroll the slide enough to skip
     carouselRef.current.scroll({
       left: currentIndex * carouselRef.current.offsetWidth,
       behavior: "smooth",
     });
   };
 
-  const slideTo = () => {};
-
   return (
-    <div className={classes.container} ref={carouselRef}>
+    <div
+      className={`${classes.container} ${classes.stopScrolling}`}
+      ref={carouselRef}
+    >
       {children.map((child, index) => (
         <child.type
           {...child.props}
           key={index}
-          className={`${classes.carouselItem} ${child.props.className}`}
+          className={`${classes.carouselItem} ${child.props.className} `}
           onTouchStart={handleScreenTouch}
+          onTouchMove={handleScreenScroll}
           onTouchEnd={handleScreenRelease}
         />
       ))}
@@ -122,6 +140,7 @@ const Carousel = ({
           onNext={nextSlide}
           onPrevious={previousSlide}
           currentIndex={currentIndex}
+          lastIndex={children.length}
           displayQuantity={displayQuantity}
         />
       )}
