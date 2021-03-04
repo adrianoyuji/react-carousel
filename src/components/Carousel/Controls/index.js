@@ -53,7 +53,7 @@ const Controls = ({
   onPrevious,
   currentIndex,
   displayQuantity,
-  lastIndex,
+  childrenLength,
 }) => {
   const classes = useStyles();
   const rightChevron = ">";
@@ -74,7 +74,7 @@ const Controls = ({
         </div>
       )}
 
-      {currentIndex < lastIndex - 1 && (
+      {currentIndex < childrenLength - 1 && (
         <div onClick={onNext} className={classes.rightButton}>
           {rightChevron}
         </div>

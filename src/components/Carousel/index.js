@@ -1,11 +1,12 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import Controls from "./Controls";
+import SlideTracker from "./SlideTracker";
 import { createUseStyles } from "react-jss";
 
 const useStyles = createUseStyles({
   container: ({ styles }) => ({
-    display: `flex`,
-    flexDirection: `row`,
+    display: "flex",
+    flexDirection: "row",
     height: styles.height || "90vh",
     maxHeight: styles.maxHeight || "none",
     width: styles.width || "100vw",
@@ -142,10 +143,15 @@ const Carousel = ({
           onNext={nextSlide}
           onPrevious={previousSlide}
           currentIndex={currentIndex}
-          lastIndex={children.length}
+          childrenLength={children.length}
           displayQuantity={displayQuantity}
         />
       )}
+      <SlideTracker
+        currentIndex={currentIndex}
+        childrenLength={children.length}
+        displayQuantity={displayQuantity}
+      />
     </div>
   );
 };

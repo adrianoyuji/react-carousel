@@ -27,10 +27,11 @@ const useStyles = createUseStyles({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#efefef",
+    backgroundColor: "#5a5a5a",
     height: "100%",
     width: "100%",
     fontSize: "1.5rem",
+    color: "#fff",
   },
 });
 
