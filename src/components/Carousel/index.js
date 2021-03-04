@@ -123,6 +123,12 @@ const Carousel = ({
     });
   };
 
+  const scrollsToIndex = (index) => {
+    //re centers the slide if the user does not
+    //scroll the slide enough to skip
+    setCurrentIndex(index);
+  };
+
   return (
     <div
       className={`${classes.container} ${classes.stopScrolling}`}
@@ -151,6 +157,7 @@ const Carousel = ({
         currentIndex={currentIndex}
         childrenLength={children.length}
         displayQuantity={displayQuantity}
+        scrollsToIndex={scrollsToIndex}
       />
     </div>
   );

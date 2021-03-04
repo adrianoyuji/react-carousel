@@ -23,15 +23,23 @@ const useStyles = createUseStyles({
     border: "solid",
     backgroundColor: "rgba(255,255,255,0.8)",
     borderRadius: 999,
+    pointerEvents: "all",
+    cursor: "pointer",
   },
   trackBallSelected: {
     backgroundColor: "rgba(0,0,0,0.8)",
   },
 });
 
-const SlideTracker = ({ currentIndex, childrenLength, displayQuantity }) => {
+const SlideTracker = ({
+  currentIndex,
+  childrenLength,
+  displayQuantity,
+  scrollsToIndex,
+}) => {
   const classes = useStyles();
   const [trackBalls, setTrackBalls] = useState(() => {
+    //creates an array with the length of the slides array
     let array = [];
     for (let i = 0; i <= childrenLength - displayQuantity; i++) {
       array = [...array, i];
@@ -60,6 +68,7 @@ const SlideTracker = ({ currentIndex, childrenLength, displayQuantity }) => {
       {trackBalls.map((ball) => (
         <span
           key={ball}
+          onClick={() => scrollsToIndex(ball)}
           className={`${classes.trackBall} ${
             currentIndex === ball && classes.trackBallSelected
           }`}
