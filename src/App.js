@@ -22,6 +22,16 @@ const useStyles = createUseStyles({
     height: "100%",
     width: "100%",
   },
+  regularComponent: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#efefef",
+    height: "100%",
+    width: "100%",
+    fontSize: "1.5rem",
+  },
 });
 
 const App = () => {
@@ -29,7 +39,6 @@ const App = () => {
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [displayQuantity, setDisplayQuantity] = useState(1);
-  const [infinite, setInfinite] = useState(false);
   const [disableControls, setDisableControl] = useState(false);
 
   const handleChangeSlide = (event) => {
@@ -38,9 +47,7 @@ const App = () => {
   const handleChangeDisplayQuantity = (event) => {
     setDisplayQuantity(event.target.value);
   };
-  const handleChangeInfinite = (event) => {
-    setInfinite(event.target.checked);
-  };
+
   const handleChangeDisableControls = (event) => {
     setDisableControl(event.target.checked);
   };
@@ -53,25 +60,30 @@ const App = () => {
           displayQuantity={displayQuantity}
           currentPosition={currentSlide}
           disableControls={disableControls}
-          infinite={infinite}
           styles={{ height: "60vh", width: "100vw" }}
         >
-          <img src="https://i.pinimg.com/originals/20/c4/ed/20c4ed904c96d955c7baed21e22d47e0.jpg" />
+          <img src="https://wallpaperaccess.com/full/1564851.jpg" />
           <img src="https://webneel.com/wallpaper/sites/default/files/images/08-2018/3-nature-wallpaper-mountain.jpg" />
-          <img src="https://i.pinimg.com/originals/54/de/30/54de300e7be008b6a744ef623f64e454.jpg" />
-          <img src="https://i.pinimg.com/originals/20/c4/ed/20c4ed904c96d955c7baed21e22d47e0.jpg" />
-          <img src="https://webneel.com/wallpaper/sites/default/files/images/08-2018/3-nature-wallpaper-mountain.jpg" />
+          <section className={classes.regularComponent}>
+            <p>I am a regular HTML component!</p>
+            <p>Send me a message on LinkedIn!</p>
+            <a
+              href="https://www.linkedin.com/in/adriano-yuji-sato-de-vasconcelos-034b09191/"
+              target="_blank"
+            >
+              Click here!
+            </a>
+          </section>
+          <img src="https://external-preview.redd.it/2C7YvwbYus_XQx43TBtu8MLnRGxuNQsDCX2x6ZgSmrI.jpg?auto=webp&s=1f42964f2430b9e74f75befc9d7bc3a9871ffce5" />
           <img src="https://i.pinimg.com/originals/54/de/30/54de300e7be008b6a744ef623f64e454.jpg" />
         </Carousel>
       </div>
       <FooterActions
         changeSlide={handleChangeSlide}
         changeDisplayQuantity={handleChangeDisplayQuantity}
-        changeInfinite={handleChangeInfinite}
         changeDisableControls={handleChangeDisableControls}
         displayQuantity={displayQuantity}
         disableControls={disableControls}
-        infinite={infinite}
       />
     </main>
   );

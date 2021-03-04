@@ -2,7 +2,12 @@ import React from "react";
 import { createUseStyles } from "react-jss";
 
 const useStyles = createUseStyles({
-  buttonsContainer: { position: "absolute", height: "100%", width: "100%" },
+  buttonsContainer: {
+    position: "absolute",
+    height: "100%",
+    width: "100%",
+    pointerEvents: "none",
+  },
   leftButton: {
     position: "absolute",
     display: "flex",
@@ -15,6 +20,7 @@ const useStyles = createUseStyles({
     cursor: "pointer",
     fontWeight: "bolder",
     fontSize: "1rem",
+    pointerEvents: "all",
     backgroundColor: "rgba(255,255,255,0.5)",
     borderRadius: 999,
     "&:hover": {
@@ -30,6 +36,7 @@ const useStyles = createUseStyles({
     width: "2rem",
     right: "1%",
     bottom: "50%",
+    pointerEvents: "all",
     cursor: "pointer",
     fontWeight: "bolder",
     fontSize: "1rem",

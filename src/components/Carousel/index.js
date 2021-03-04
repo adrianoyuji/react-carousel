@@ -24,7 +24,6 @@ const useStyles = createUseStyles({
 const Carousel = ({
   children = [],
   styles,
-  infinite = false,
   displayQuantity = 1,
   currentPosition = 0,
   disableControls = false,

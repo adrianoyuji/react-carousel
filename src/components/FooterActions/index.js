@@ -23,10 +23,8 @@ const useStyles = createUseStyles({
 const FooterActions = ({
   changeSlide,
   changeDisplayQuantity,
-  changeInfinite,
   changeDisableControls,
   displayQuantity,
-  infinite,
   displayControls,
 }) => {
   const classes = useStyles();
@@ -59,14 +57,6 @@ const FooterActions = ({
             type="checkbox"
             onChange={changeDisableControls}
             defaultChecked={displayControls}
-          />
-        </label>
-        <label className={classes.inputLabel}>
-          Infinite Scrolling:
-          <input
-            type="checkbox"
-            onChange={changeInfinite}
-            defaultChecked={infinite}
           />
         </label>
       </section>
