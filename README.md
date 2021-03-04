@@ -128,6 +128,10 @@ You can specify some of the dimensions of the carousel, as well specify the `obj
 ````
 Above snippet set `height` to `60vh` and `width` to `100vw`.
 
+# Dependencies
+
+This projects only uses [React JSS](https://cssinjs.org/react-jss/), a CSS-IN-JS allower, no other external library was needed.
+
 # Contact
 If you would like to talk to me, you can email to adrianoyuji@gmail.com or DM me on LinkedIn by [clicking here](https://www.linkedin.com/in/adriano-yuji-sato-de-vasconcelos-034b09191/).
 ### Thank you!
