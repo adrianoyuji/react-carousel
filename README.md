@@ -3,8 +3,8 @@
 
 #### **This features a Carousel Component that:**
 * Works on mobile and desktop devices
-* Supports swipes on mobile
-* Works with any HTML Component
+* Supports swipes on both mobile and desktop
+* Works with any HTML/React Component
 * Is animated, finger-following swipes, just like Instagram multi-picture post
 
 #### **It also features:**
