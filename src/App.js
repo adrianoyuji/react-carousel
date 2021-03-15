@@ -33,6 +33,11 @@ const useStyles = createUseStyles({
     fontSize: "1.5rem",
     color: "#fff",
   },
+  imgStyle: {
+    width: "100%",
+    height: "100%",
+    objectFit: "contain",
+  },
 });
 
 const App = () => {
@@ -63,8 +68,14 @@ const App = () => {
           disableControls={disableControls}
           styles={{ height: "60vh", width: "100vw" }}
         >
-          <img src="https://wallpaperaccess.com/full/1564851.jpg" />
-          <img src="https://webneel.com/wallpaper/sites/default/files/images/08-2018/3-nature-wallpaper-mountain.jpg" />
+          <img
+            className={classes.imgStyle}
+            src="https://wallpaperaccess.com/full/1564851.jpg"
+          />
+          <img
+            className={classes.imgStyle}
+            src="https://webneel.com/wallpaper/sites/default/files/images/08-2018/3-nature-wallpaper-mountain.jpg"
+          />
           <section className={classes.regularComponent}>
             <p>I am a regular HTML component!</p>
             <p>Send me a message on LinkedIn!</p>
@@ -75,8 +86,14 @@ const App = () => {
               Click here!
             </a>
           </section>
-          <img src="https://external-preview.redd.it/2C7YvwbYus_XQx43TBtu8MLnRGxuNQsDCX2x6ZgSmrI.jpg?auto=webp&s=1f42964f2430b9e74f75befc9d7bc3a9871ffce5" />
-          <img src="https://i.pinimg.com/originals/54/de/30/54de300e7be008b6a744ef623f64e454.jpg" />
+          <img
+            className={classes.imgStyle}
+            src="https://external-preview.redd.it/2C7YvwbYus_XQx43TBtu8MLnRGxuNQsDCX2x6ZgSmrI.jpg?auto=webp&s=1f42964f2430b9e74f75befc9d7bc3a9871ffce5"
+          />
+          <img
+            className={classes.imgStyle}
+            src="https://i.pinimg.com/originals/54/de/30/54de300e7be008b6a744ef623f64e454.jpg"
+          />
         </Carousel>
       </div>
       <FooterActions

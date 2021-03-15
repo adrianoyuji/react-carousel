@@ -15,10 +15,9 @@ const useStyles = createUseStyles({
     overflowY: "hidden",
     position: "relative",
   }),
-  carouselItem: ({ styles, displayQuantity }) => ({
+  carouselItem: ({ displayQuantity }) => ({
     minHeight: "100%",
     minWidth: `${100 / displayQuantity}%`,
-    objectFit: styles.objectFit || "contain",
   }),
 });
 
@@ -31,52 +30,125 @@ const Carousel = ({
 }) => {
   const classes = useStyles({ styles, displayQuantity });
   const [currentIndex, setCurrentIndex] = useState(currentPosition);
-  const [onTouchTimer, setOnTouchtimer] = useState(0);
-  const [initialPosition, setInitialPosition] = useState(0);
   const carouselRef = useRef(null);
 
   useEffect(() => {
-    setCurrentIndex(currentPosition);
+    const handleReleaseEvent = (event) => {
+      switch (event.type) {
+        case "mouseup":
+          handleScreenRelease({
+            currentPosition: event.pageX,
+            initialPosition,
+            onTouchTimer,
+          });
+          carouselRef.current.removeEventListener("mousemove", handleMoveEvent);
+          carouselRef.current.removeEventListener(
+            "mouseup",
+            handleReleaseEvent
+          );
+          break;
+        case "touchend":
+          handleScreenRelease({
+            currentPosition: event.changedTouches.item(0).pageX,
+            initialPosition,
+            onTouchTimer,
+          });
+          carouselRef.current.removeEventListener("touchmove", handleMoveEvent);
+          carouselRef.current.removeEventListener(
+            "touchend",
+            handleReleaseEvent
+          );
+          break;
+        default:
+          break;
+      }
+
+      onTouchTimer = null;
+      initialPosition = null;
+    };
+
+    const handleMoveEvent = (event) => {
+      switch (event.type) {
+        case "mousemove":
+          handleScreenScroll({ currentPosition: event.pageX, initialPosition });
+          break;
+        case "touchmove":
+          handleScreenScroll({
+            currentPosition: event.touches[0].pageX,
+            initialPosition,
+          });
+          break;
+        default:
+          break;
+      }
+    };
+
+    const handleDownEvent = (event) => {
+      //prevent image/text dragging
+      event.preventDefault();
+      //register time of click/touch event
+      onTouchTimer = performance.now();
+      switch (event.type) {
+        case "mousedown":
+          initialPosition = event.pageX;
+          carouselRef.current.addEventListener("mousemove", handleMoveEvent);
+          carouselRef.current.addEventListener("mouseup", handleReleaseEvent);
+          break;
+        case "touchstart":
+          initialPosition = event.changedTouches.item(0).pageX;
+          carouselRef.current.addEventListener("touchmove", handleMoveEvent);
+          carouselRef.current.addEventListener("touchend", handleReleaseEvent);
+          break;
+        default:
+          break;
+      }
+    };
+    let onTouchTimer = null;
+    let initialPosition = null;
+
+    // Bind the event listener
+    carouselRef.current.addEventListener("mousedown", handleDownEvent);
+    carouselRef.current.addEventListener("touchstart", handleDownEvent);
+    return () => {
+      // Unbind the event listener on clean up
+      carouselRef.current.removeEventListener("mousedown", handleDownEvent);
+      carouselRef.current.removeEventListener("touchstart", handleDownEvent);
+    };
+  }, [carouselRef, currentIndex]);
+
+  useEffect(() => {
+    setCurrentIndex(Number(currentPosition));
   }, [currentPosition]);
 
   useEffect(() => {
+    //resposible for scrolling
     carouselRef.current.scroll({
       left: (currentIndex * carouselRef.current.offsetWidth) / displayQuantity,
       behavior: "smooth",
     });
   }, [currentIndex]);
 
-  const handleScreenTouch = useCallback(
-    (event) => {
-      //saves the initial time on screen touch
-      setOnTouchtimer(performance.now());
-      //gets page X value on screen touch
-      setInitialPosition(event.changedTouches.item(0).pageX);
-    },
-    [onTouchTimer, initialPosition]
-  );
-
   const handleScreenScroll = useCallback(
-    (event) => {
+    ({ currentPosition, initialPosition }) => {
       //this scrolls the slides, preventing inertial scrolling
       //tracks the user finger on scroll
+
       carouselRef.current.scroll(
-        (event.touches[0].pageX - initialPosition) * -1 +
+        (currentPosition - initialPosition) * -1 +
           (currentIndex * carouselRef.current.offsetWidth) / displayQuantity,
         0
       );
     },
-    [initialPosition, carouselRef]
+    [carouselRef, currentIndex]
   );
 
   const handleScreenRelease = useCallback(
-    (event) => {
-      //gets page X value on screen release
-      const currentPosition = event.changedTouches.item(0).pageX;
-
+    ({ currentPosition, onTouchTimer, initialPosition }) => {
       //this condition handles swiping to left or right
-      //if the user swipes fast it will activate the sliding
-      if (performance.now() - onTouchTimer <= 300) {
+      //if the user swipes too fast nothing will happen,
+      //but if the user swipes minimally fast it will swipe
+      const timeDifference = performance.now() - onTouchTimer;
+      if (timeDifference >= 50 && timeDifference <= 300) {
         if (initialPosition <= currentPosition) {
           previousSlide();
         } else {
@@ -97,31 +169,31 @@ const Carousel = ({
         }
       }
     },
-    [onTouchTimer, initialPosition]
+    [carouselRef, currentIndex]
   );
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     //scrols to next slide
     if (currentIndex < children.length - displayQuantity) {
       setCurrentIndex(currentIndex + 1);
     }
-  };
+  }, [currentIndex]);
 
-  const previousSlide = () => {
+  const previousSlide = useCallback(() => {
     //scrolls to previous slide
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
     }
-  };
+  }, [currentIndex]);
 
-  const reCenterSlide = () => {
+  const reCenterSlide = useCallback(() => {
     //re centers the slide if the user does not
     //scroll the slide enough to skip
     carouselRef.current.scroll({
       left: currentIndex * carouselRef.current.offsetWidth,
       behavior: "smooth",
     });
-  };
+  }, [currentIndex]);
 
   const scrollsToIndex = (index) => {
     //re centers the slide if the user does not
@@ -135,14 +207,9 @@ const Carousel = ({
       ref={carouselRef}
     >
       {children.map((child, index) => (
-        <child.type
-          {...child.props}
-          key={index}
-          className={`${classes.carouselItem} ${child.props.className} `}
-          onTouchStart={handleScreenTouch}
-          onTouchMove={handleScreenScroll}
-          onTouchEnd={handleScreenRelease}
-        />
+        <section key={index} className={classes.carouselItem}>
+          {child}
+        </section>
       ))}
       {window.innerWidth > 800 && !disableControls && (
         <Controls
