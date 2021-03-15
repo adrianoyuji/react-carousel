@@ -15,10 +15,9 @@ const useStyles = createUseStyles({
     overflowY: "hidden",
     position: "relative",
   }),
-  carouselItem: ({ styles, displayQuantity }) => ({
+  carouselItem: ({ displayQuantity }) => ({
     minHeight: "100%",
     minWidth: `${100 / displayQuantity}%`,
-    objectFit: styles.objectFit || "contain",
   }),
 });
 
@@ -36,7 +35,7 @@ const Carousel = ({
   const carouselRef = useRef(null);
 
   useEffect(() => {
-    setCurrentIndex(currentPosition);
+    setCurrentIndex(Number(currentPosition));
   }, [currentPosition]);
 
   useEffect(() => {
@@ -135,14 +134,15 @@ const Carousel = ({
       ref={carouselRef}
     >
       {children.map((child, index) => (
-        <child.type
-          {...child.props}
+        <section
           key={index}
-          className={`${classes.carouselItem} ${child.props.className} `}
+          className={classes.carouselItem}
           onTouchStart={handleScreenTouch}
           onTouchMove={handleScreenScroll}
           onTouchEnd={handleScreenRelease}
-        />
+        >
+          {child}
+        </section>
       ))}
       {window.innerWidth > 800 && !disableControls && (
         <Controls
